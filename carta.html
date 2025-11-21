@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Carta Animada Morada</title>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: #ffb3d9; /* rosa suave */
+        margin: 0;
+        overflow: hidden;
+        font-family: 'Arial';
+    }
+
+    /* SOBRE MORADO */
+    .carta {
+        width: 330px;
+        height: 230px;
+        background: #7b2cbf; /* morado fuerte */
+        position: relative;
+        cursor: pointer;
+        transition: transform 0.5s ease;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+        transform-style: preserve-3d;
+    }
+
+    /* TAPA MORADA MÁS CLARA */
+    .tapa {
+        width: 100%;
+        height: 100%;
+        background: #9d4edd; /* morado claro */
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-radius: 12px 12px 0 0;
+        clip-path: polygon(0 0, 100% 0, 50% 65%);
+        transform-origin: top;
+        transition: transform 0.8s ease;
+    }
+
+    /* HOJA INTERIOR */
+    .contenido {
+        width: 90%;
+        height: 75%;
+        background: white;
+        position: absolute;
+        top: 40%;
+        left: 5%;
+        padding: 20px;
+        box-sizing: border-box;
+        border-radius: 10px;
+        opacity: 0;
+        transition: all 1s ease;
+        overflow-y: auto;
+        transform: translateY(30px);
+    }
+
+    .carta.abierta .tapa {
+        transform: rotateX(180deg);
+    }
+
+    .carta.abierta .contenido {
+        opacity: 1;
+        top: -10%;
+        transform: translateY(0);
+    }
+
+    /* CORAZONES REBOTANDO */
+    .corazon {
+        position: absolute;
+        font-size: 30px;
+        user-select: none;
+        pointer-events: none;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="carta" onclick="abrirCarta()">
+    <div class="tapa"></div>
+
+    <div class="contenido">
+        <p>
+        Antes de dejar ir todo esto, quería decirte algo sin prisa y sin interrupciones, solo desde la sinceridad con la que siempre te hablé.<br><br>
+
+        Desde que te conocí, quise acercarme a ti de una manera genuina. Me interesaba conocerte, entenderte, descubrir lo que había detrás de tu forma de ser. Tal vez en ese camino no hice todo perfecto; hubo cosas que quizá no debí manejar como las manejé, cosas que pudieron confundirte o cansarte. Y si en algún momento te hice sentir incómoda, o si interpretaste algo distinto a lo que realmente sentía, te pido perdón.<br><br>
+
+        Pero también quiero que sepas algo que para mí es importante:<br>
+        <strong>Nada de lo que te dije o te demostré fue un juego.</strong><br>
+        Todo lo que sentí por ti fue real. No fingí, no inventé, no exageré. Fui sincero incluso cuando me costaba expresarlo. Tú significaste más de lo que crees.<br><br>
+
+        Entiendo que quizá para ti todo esto tuvo menos peso, o que simplemente te hartaste de mí. A veces la vida es así: uno entrega lo que siente con claridad y aun así no siempre coincide con lo que la otra persona está dispuesta a dar. Y está bien… no te culpo. Nadie elige cuándo se cansa o cuándo deja de sentir lo mismo.<br><br>
+
+        Solo quería agradecerte lo que sí compartimos, lo que sí pude conocer de ti, esos momentos que para mí sí significaron algo. Me hubiera gustado que las cosas se dieran diferente, que pudiéramos habernos dado la oportunidad real de ver qué podíamos construir. Pero entiendo que no siempre los caminos se alinean.<br><br>
+
+        Me quedo con la tranquilidad de haber sido honesto contigo desde el principio, y con el cariño genuino que siempre sentí por ti.<br>
+        Ojalá la vida te lleve a personas que sepan ver en ti lo que yo vi desde el primer día.<br><br>
+
+        Cuídate mucho.<br>
+        De verdad.
+        </p>
+    </div>
+</div>
+
+<script>
+function abrirCarta() {
+    const carta = document.querySelector('.carta');
+    carta.classList.toggle('abierta');
+    crearCorazonesRebotando();
+}
+
+/* CORAZONES QUE REBOTAN */
+function crearCorazonesRebotando() {
+    for (let i = 0; i < 10; i++) {
+        crearCorazon();
+    }
+}
+
+function crearCorazon() {
+    const corazon = document.createElement("div");
+    corazon.className = "corazon";
+    corazon.innerHTML = "💜";
+
+    // Posición inicial cerca de la carta
+    corazon.style.left = (window.innerWidth / 2 - 50 + Math.random() * 100) + "px";
+    corazon.style.top = (window.innerHeight / 2) + "px";
+
+    document.body.appendChild(corazon);
+
+    let x = parseInt(corazon.style.left);
+    let y = parseInt(corazon.style.top);
+
+    // Velocidades aleatorias
+    let dx = (Math.random() * 4 + 2) * (Math.random() < 0.5 ? -1 : 1);
+    let dy = -(Math.random() * 4 + 2);
+
+    function mover() {
+        x += dx;
+        y += dy;
+
+        dy += 0.2; // gravedad ligera
+
+        // Rebote horizontal
+        if (x <= 0 || x >= window.innerWidth - 30) {
+            dx *= -1;
+        }
+        // Rebote vertical
+        if (y <= 0 || y >= window.innerHeight - 30) {
+            dy *= -0.8; // pierde un poco de energía para ser más real
+        }
+
+        corazon.style.left = x + "px";
+        corazon.style.top = y + "px";
+
+        // eliminar tras un tiempo
+        if (y > window.innerHeight - 20 && Math.abs(dy) < 1) {
+            corazon.remove();
+        } else {
+            requestAnimationFrame(mover);
+        }
+    }
+
+    mover();
+}
+</script>
+
+</body>
+</html>
